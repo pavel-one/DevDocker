@@ -1,0 +1,39 @@
+version: '3'
+
+networks:
+  # Подсети проектов
+  project:
+    ipam:
+      config:
+        - subnet: 100.66.1.0/24 #env
+
+services:
+  app:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./app:/var/www/app
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - php
+    networks:
+      project:
+        ipv4_address: 100.66.1.10 #env
+  php:
+    image: php:7.2-fpm
+    volumes:
+      - ./app:/usr/share/nginx/html
+  mariadb:
+    image: mariadb:10.4
+    restart: always
+    volumes:
+      - ./mariadb:/var/lib/mysql
+    networks:
+      project:
+        ipv4_address: 100.66.1.20 #env
+    environment:
+      MYSQL_ROOT_PASSWORD: root #env
+      MYSQL_DATABASE: micropanel #env
+      MYSQL_USER: micropanel #env
+      MYSQL_PASSWORD: tipira21 #env

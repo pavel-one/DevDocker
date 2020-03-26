@@ -1,0 +1,10 @@
+/app/
+!/app/empty.txt
+
+/mariadb/
+!/mariadb/empty.txt
+
+/mysql/
+!/mysql/empty.txt
+
+/.idea/
