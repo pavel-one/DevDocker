@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3'
 
 services:
   nginx:
@@ -9,7 +9,7 @@ services:
       - app
       - db
     volumes:
-      - ./nginx:/etc/nginx/conf.d/
+      - ./conf/nginx:/etc/nginx/conf.d/
       - ./app:/var/www
     networks:
       project:
@@ -36,6 +36,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./db:/var/lib/mysql
+      - ./conf/db/myconf.cnf:/etc/mysql/conf.d/myconf.cnf
     environment:
       MYSQL_ROOT_PASSWORD: asdhfhasdjaowurnv
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -44,6 +45,7 @@ services:
     networks:
       project:
         ipv4_address: ${DOCKER_DB_IP}
+    command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
 
 networks:
   # Подсети проектов

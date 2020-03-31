@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:7.3-fpm
 
 # Аргументы принимающие из docker-compose.yml
 ARG user
@@ -14,6 +14,8 @@ RUN apt-get update && apt-get install -y \
     mc \
     nano \
     vim \
+    libmagickwand-dev \
+    imagemagick \
     unzip
 
 # Очистка кэша apt
@@ -21,6 +23,10 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Установка расширений php
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+
+# Image Magick
+RUN printf "\n" | pecl install imagick
+RUN docker-php-ext-enable imagick
 
 # Последний композер
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
