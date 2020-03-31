@@ -16,13 +16,15 @@ RUN apt-get update && apt-get install -y \
     vim \
     libmagickwand-dev \
     imagemagick \
+    zlib1g-dev \
+    libzip-dev \
     unzip
 
 # Очистка кэша apt
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Установка расширений php
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Image Magick
 RUN printf "\n" | pecl install imagick
