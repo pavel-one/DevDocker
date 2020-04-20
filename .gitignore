@@ -1,4 +1,6 @@
 /app/
 /db/
+/redis/
 /.idea/
 /docker-compose.yml
+/conf/nginx/*.conf

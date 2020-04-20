@@ -1,7 +1,8 @@
 init:
 	@make down
 	bash bin/init.sh
-#	@make build
+	@make build
+	bash bin/cms.sh
 #	@composer
 build:
 	docker-compose up --build -d

@@ -19,7 +19,7 @@ echo -e "Введите домен вашего сайта без http/https, о
 read URL
 sudo bash ${PWD}/bin/hosts.sh ${URL}
 
-
+# Генерация docker-compose.yml
 echo -e "${GREEN}Генерируем docker-compose.yml${NORMAL}"
 echo -e "Укажите прослушиваемый локальный порт по умолчанию - 80, например если вы хотите чтобы ваш контейнер был \
 доступен по адресу ${URL}:81 впишите 81"
@@ -31,3 +31,5 @@ fi
 
 sed -e "s;%user%;${USER};g" -e "s;%uid%;${ID};g" -e "s;%port%;${PORT};g" ${TEMPLATE_DIR}docker-compose.yml > docker-compose.yml
 
+## Генерация nginx
+echo -e "${GREEN}Генерируем nginx конфигурации${NORMAL}"
