@@ -6,6 +6,7 @@ HR="----------------------------------------------"
 ID=$(id -u)
 GID=$(id -g)
 TEMPLATE_DIR="${PWD}/bin/templates/"
+mount_str="" # дамп по умолчанию
 
 
 sudo rm -rf db/ redis/ app/
@@ -33,38 +34,37 @@ if [[ -z "$PORT" ]]; then
     PORT=80
 fi
 
-sed -e "s;%user%;${USER};g" -e "s;%uid%;${ID};g" -e "s;%port%;${PORT};g" ${TEMPLATE_DIR}docker-compose.yml > docker-compose.yml
+echo -e "Выберете фреймворк: \n 1. Laravel \n 2. MODX:"
+read CMS
 
 ## Генерация nginx
 echo -e "${GREEN}Генерируем nginx конфигурации${NORMAL}"
-echo -e "Выберете фреймворк: \n 1. Laravel \n 2. MODX:"
-
-read CMS
 
 if [[ "${CMS}" -eq "2" ]]; then
 	echo "Выбран MODX"
 	sed -e "s;%url%;${URL};g" ${TEMPLATE_DIR}modx.conf > ./conf/nginx/project.conf
+	mount_str="- ./bin/templates/modx.sql:/docker-entrypoint-initdb.d/dump.sql"
 else
 	echo "Выбран Laravel"
 	sed -e "s;%url%;${URL};g" ${TEMPLATE_DIR}laravel.conf > ./conf/nginx/project.conf
 fi
+sed -e "s;%user%;${USER};g" -e "s;%uid%;${ID};g" -e "s;%port%;${PORT};g" -e "s;%mount%;${mount_str};g" ${TEMPLATE_DIR}docker-compose.yml > docker-compose.yml
 
-make build
+make build > /dev/null
 
 echo -en "${RED}Вам нужна автоматическая установка CMS в папку ./app [yes/no]:${NORMAL}"
 read START
 
-if [[ "${START}" -ne "yes" ]]; then
+if [[ ${START} != "yes" ]]; then
 	echo "Выходим"
-	exit 0
+	exit 25;
 fi
 
 if [[ "${CMS}" -eq "2" ]]; then
 	echo -e "${GREEN}Устанавливаем MODX${NORMAL}"
-	tar -xvf ${TEMPLATE_DIR}modx.tar.gz -C ./app
-	echo -e "${GREEN}Распаковка выполнена успешно, ожидаем создание базы данных${NORMAL}"
-	sleep 10
-	docker-compose exec db mysql -u db_user -pX5NasAOm db < ${TEMPLATE_DIR}modx.sql
+	tar -xvf ${TEMPLATE_DIR}modx.tar.gz -C ./app > /dev/null
+	echo -e "${GREEN}Установка выполнена успешно, ожидаем создание базы данных${NORMAL}"
+	sleep 5
 else
 	echo -e "${GREEN}Устанавливаем Laravel${NORMAL}"
 	git clone https://github.com/laravel/laravel.git app

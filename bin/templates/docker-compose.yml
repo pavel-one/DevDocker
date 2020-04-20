@@ -35,13 +35,14 @@ services:
     volumes:
       - ./db:/var/lib/mysql
       - ./conf/db/myconf.cnf:/etc/mysql/conf.d/myconf.cnf
+      %mount%
     environment:
       MYSQL_ROOT_PASSWORD: xoW3WngKCbpv
       MYSQL_DATABASE: db
       MYSQL_USER: db_user
       MYSQL_PASSWORD: X5NasAOm
     ports:
-      - 3360:3306
+      - 3306:3306
 #    networks:
 #      - project
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
