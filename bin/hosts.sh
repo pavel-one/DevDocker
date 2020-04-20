@@ -11,4 +11,5 @@ if grep ${URL}\$ /etc/hosts; then
 else
 	echo -e "127.0.0.1\t${URL}"
 	echo -e "127.0.0.1\t${URL}" >> /etc/hosts
+	echo -e "127.0.0.1\twww.${URL}" >> /etc/hosts
 fi

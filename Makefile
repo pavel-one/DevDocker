@@ -1,11 +1,9 @@
 init:
 	@make down
 	bash bin/init.sh
-	@make build
-	bash bin/cms.sh
-#	@composer
 build:
 	docker-compose up --build -d
+	@make status
 up:
 	@make down
 	docker-compose up -d

@@ -36,10 +36,10 @@ services:
       - ./db:/var/lib/mysql
       - ./conf/db/myconf.cnf:/etc/mysql/conf.d/myconf.cnf
     environment:
-      MYSQL_ROOT_PASSWORD: asdhfhasdjaowurnv
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: xoW3WngKCbpv
+      MYSQL_DATABASE: db
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: X5NasAOm
     networks:
       - project
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
@@ -57,4 +57,4 @@ networks:
   project:
     ipam:
       config:
-        - subnet: 100.70.1.0/64
+        - subnet: 100.70.1.0/24
