@@ -3,8 +3,9 @@ version: '3'
 services:
   nginx:
     image: nginx:1.17-alpine
+    restart: unless-stopped
     ports:
-      - 80:80
+      - %port%:80
     depends_on:
       - app
       - db
@@ -12,14 +13,12 @@ services:
       - ./conf/nginx:/etc/nginx/conf.d/
       - ./app:/var/www
     networks:
-      project:
-        ipv4_address: ${DOCKER_NGINX_IP}
-
+      - project
   app:
     build:
       args:
-        user: pavel
-        uid: 1000
+        user: %user%
+        uid: %uid%
       context: ./
       dockerfile: Dockerfile
     image: app
@@ -28,8 +27,7 @@ services:
     volumes:
       - ./app:/var/www
     networks:
-      project:
-        ipv4_address: ${DOCKER_PHP_IP}
+      - project
 
   db:
     image: mysql:5.7
@@ -43,13 +41,20 @@ services:
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     networks:
-      project:
-        ipv4_address: ${DOCKER_DB_IP}
+      - project
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - ./redis:/var/lib/redis
+    ports:
+      - 6379:6379
 
 networks:
   # Подсети проектов
   project:
     ipam:
       config:
-        - subnet: ${DOCKER_SUBNET}
+        - subnet: 100.70.1.0/64

@@ -1,9 +1,15 @@
 init:
+	@make down
+	bash bin/init.sh
+#	@make build
+#	@composer
+build:
 	docker-compose up --build -d
-	@composer
 up:
 	@make down
-	docker-compose up -d #тут название контейнера
+	docker-compose up -d
+status:
+	docker-compose ps
 down:
 	docker-compose stop
 exec:
