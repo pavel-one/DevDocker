@@ -12,8 +12,8 @@ services:
     volumes:
       - ./conf/nginx:/etc/nginx/conf.d/
       - ./app:/var/www
-    networks:
-      - project
+#    networks:
+#      - project
   app:
     build:
       args:
@@ -26,8 +26,8 @@ services:
     working_dir: /var/www/
     volumes:
       - ./app:/var/www
-    networks:
-      - project
+#    networks:
+#      - project
 
   db:
     image: mysql:5.7
@@ -40,8 +40,8 @@ services:
       MYSQL_DATABASE: db
       MYSQL_USER: db_user
       MYSQL_PASSWORD: X5NasAOm
-    networks:
-      - project
+#    networks:
+#      - project
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
 
   redis:
@@ -52,9 +52,8 @@ services:
     ports:
       - 6379:6379
 
-networks:
-  # Подсети проектов
-  project:
-    ipam:
-      config:
-        - subnet: 100.70.1.0/24
+#networks:
+#  project:
+#    ipam:
+#      config:
+#        - subnet: 100.70.1.0/24
