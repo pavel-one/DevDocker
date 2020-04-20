@@ -1,5 +1,4 @@
 init:
-	@make down
 	bash bin/init.sh
 build:
 	docker-compose up --build -d
