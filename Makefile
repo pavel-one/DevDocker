@@ -4,12 +4,12 @@ build:
 	docker-compose up --build -d
 	@make status
 up:
-	@make down
 	docker-compose up -d
 status:
 	docker-compose ps
 down:
-	@make dump
+	echo "Делаем дамп базы данных"
+	docker-compose exec db mysqldump -u db_user -pX5NasAOm db > dump/dump.sql
 	docker-compose stop
 exec:
 	docker-compose exec app bash
