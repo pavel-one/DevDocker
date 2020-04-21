@@ -8,8 +8,7 @@ GID=$(id -g)
 TEMPLATE_DIR="${PWD}/bin/templates/"
 
 
-sudo rm -rf db/ redis/ app/
-mkdir app
+sudo rm -rf db/ redis/
 
 echo -e ${HR}
 echo -e "${GREEN}${USER}, Ваш id = ${ID}, ваш GID = ${GID}, если вы не авторизованы не под пользователем с \
@@ -42,34 +41,44 @@ echo -e "${GREEN}Генерируем nginx конфигурации${NORMAL}"
 if [[ "${CMS}" -eq "2" ]]; then
 	echo "Выбран MODX"
 	sed -e "s;%url%;${URL};g" ${TEMPLATE_DIR}modx.conf > ./conf/nginx/project.conf
-	cp ${TEMPLATE_DIR}modx.sql ${PWD}/dump/dump.sql
 else
 	echo "Выбран Laravel"
 	sed -e "s;%url%;${URL};g" ${TEMPLATE_DIR}laravel.conf > ./conf/nginx/project.conf
-	cp ${TEMPLATE_DIR}laravel.sql ${PWD}/dump/dump.sql
 fi
 sed -e "s;%user%;${USER};g" -e "s;%uid%;${ID};g" -e "s;%port%;${PORT};g" ${TEMPLATE_DIR}docker-compose.yml > docker-compose.yml
-
-make build > /dev/null
 
 echo -en "${RED}Вам нужна автоматическая установка CMS в папку ./app [yes/no]:${NORMAL}"
 read START
 
 if [[ ${START} != "yes" ]]; then
+	make build > /dev/null
 	echo "Выходим"
 	exit 25;
 fi
 
+echo -e "${GREEN}Очищаем папку app${NORMAL}"
+sudo rm -rf app/
+mkdir app
+
 if [[ "${CMS}" -eq "2" ]]; then
 	echo -e "${GREEN}Устанавливаем MODX${NORMAL}"
+	echo -e "${GREEN}Копируем чистую базу данных${NORMAL}"
+	cp ${TEMPLATE_DIR}modx.sql ${PWD}/dump/dump.sql
 	tar -xvf ${TEMPLATE_DIR}modx.tar.gz -C ./app > /dev/null
+	make build > /dev/null
 	echo -e "${GREEN}Установка выполнена успешно, ожидаем создание базы данных${NORMAL}"
 	sleep 5
 else
 	echo -e "${GREEN}Устанавливаем Laravel${NORMAL}"
+	echo -e "${GREEN}Копируем чистую базу данных${NORMAL}"
+	cp ${TEMPLATE_DIR}laravel.sql ${PWD}/dump/dump.sql
 	git clone https://github.com/laravel/laravel.git app
 	rm -rf ./app/.git
 	sed -e "s;%url%;${URL};g" ${TEMPLATE_DIR}laravel.env > ./app/.env
+
+	make build > /dev/null
+	echo -e "${GREEN}Установка выполнена успешно, ожидаем создание базы данных${NORMAL}"
+	sleep 5
 
 	docker-compose exec app composer install
 	docker-compose exec app php artisan key:generate
