@@ -47,7 +47,8 @@ else
 fi
 sed -e "s;%user%;${USER};g" -e "s;%uid%;${ID};g" -e "s;%port%;${PORT};g" ${TEMPLATE_DIR}docker-compose.yml > docker-compose.yml
 
-echo -en "${RED}Вам нужна автоматическая установка CMS в папку ./app [yes/no]:${NORMAL}"
+echo -e "Вам нужна автоматическая установка фреймворка в папку ./app [yes/no]:"
+echo -e "${RED} Внимание! Это удалит ваш дамп БД и все файлы в папке ./app${NORMAL}"
 read START
 
 if [[ ${START} != "yes" ]]; then
