@@ -6,7 +6,6 @@ HR="----------------------------------------------"
 ID=$(id -u)
 GID=$(id -g)
 TEMPLATE_DIR="${PWD}/bin/templates/"
-mount_str="" # дамп по умолчанию
 
 
 sudo rm -rf db/ redis/ app/
@@ -43,12 +42,13 @@ echo -e "${GREEN}Генерируем nginx конфигурации${NORMAL}"
 if [[ "${CMS}" -eq "2" ]]; then
 	echo "Выбран MODX"
 	sed -e "s;%url%;${URL};g" ${TEMPLATE_DIR}modx.conf > ./conf/nginx/project.conf
-	mount_str="- ./bin/templates/modx.sql:/docker-entrypoint-initdb.d/dump.sql"
+	cp ${TEMPLATE_DIR}modx.sql ${PWD}dump/dump.sql
 else
 	echo "Выбран Laravel"
 	sed -e "s;%url%;${URL};g" ${TEMPLATE_DIR}laravel.conf > ./conf/nginx/project.conf
+	cp ${TEMPLATE_DIR}laravel.sql ${PWD}dump/dump.sql
 fi
-sed -e "s;%user%;${USER};g" -e "s;%uid%;${ID};g" -e "s;%port%;${PORT};g" -e "s;%mount%;${mount_str};g" ${TEMPLATE_DIR}docker-compose.yml > docker-compose.yml
+sed -e "s;%user%;${USER};g" -e "s;%uid%;${ID};g" -e "s;%port%;${PORT};g" ${TEMPLATE_DIR}docker-compose.yml > docker-compose.yml
 
 make build > /dev/null
 

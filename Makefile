@@ -9,11 +9,15 @@ up:
 status:
 	docker-compose ps
 down:
+	@make dump
 	docker-compose stop
 exec:
 	docker-compose exec app bash
 rm:
 	docker-compose rm
+dump:
+	echo -e "Делаем дамп базы данных"
+	docker-compose exec db mysqldump -u db_user -pX5NasAOm db > dump/dump.sql
 exec.nginx:
 	docker-compose exec nginx bash
 exec.db:
