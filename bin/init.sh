@@ -9,6 +9,7 @@ TEMPLATE_DIR="${PWD}/bin/templates/"
 
 
 sudo rm -rf db/ redis/
+mkdir app
 
 echo -e ${HR}
 echo -e "${GREEN}${USER}, Ваш id = ${ID}, ваш GID = ${GID}, если вы не авторизованы не под пользователем с \
@@ -59,7 +60,6 @@ fi
 
 echo -e "${GREEN}Очищаем папку app${NORMAL}"
 sudo rm -rf app/
-mkdir app
 
 if [[ "${CMS}" -eq "2" ]]; then
 	echo -e "${GREEN}Устанавливаем MODX${NORMAL}"
